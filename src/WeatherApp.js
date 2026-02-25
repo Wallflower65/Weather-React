@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CurrentWeather from "./CurrentWeather";
 import WeatherForecast from "./WeatherForecast";
@@ -28,6 +28,10 @@ export default function WeatherApp(props) {
     axios.get(apiUrl).then(handleResponse);
   }
 
+  useEffect(() => {
+    search();
+  }, []); // runs only once on load
+
   function handleSubmit(event) {
     event.preventDefault();
     search();
@@ -37,32 +41,59 @@ export default function WeatherApp(props) {
     setCity(event.target.value);
   }
 
-  if (weatherData.ready) {
-    return (
-      <div className="WeatherApp">
-        <div className="app-container">
-          <form onSubmit={handleSubmit} className="search-form">
-            <input
-              type="search"
-              placeholder="Enter a city..."
-              className="search-input"
-              autoFocus
-              onChange={handleCityChange}
-            />
-            <input
-              type="submit"
-              value="Search"
-              className="search-button"
-            />
-          </form>
-
-          <CurrentWeather data={weatherData} />
-          <WeatherForecast coordinates={weatherData.coordinates} />
-        </div>
-      </div>
-    );
-  } else {
-    search();
+  if (!weatherData.ready) {
     return <div className="loading">Loading beautiful weather...</div>;
   }
+
+  return (
+    <div className="WeatherApp">
+      <div className="app-container">
+        <form onSubmit={handleSubmit} className="search-form">
+          <input
+            type="search"
+            placeholder="Enter a city..."
+            className="search-input"
+            autoFocus
+            onChange={handleCityChange}
+          />
+          <input
+            type="submit"
+            value="Search"
+            className="search-button"
+          />
+        </form>
+
+        <CurrentWeather data={weatherData} />
+        <WeatherForecast coordinates={weatherData.coordinates} />
+
+        <footer>
+          This project was coded by{" "}
+          <a
+            href="https://github.com/Wallflower65"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Phaphamani Zoneleni
+          </a>{" "}
+          and is{" "}
+          <a
+            href="https://github.com/Wallflower65/Weather-React"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            open-sourced on GitHub
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://weather-react-phaphamani.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            hosted on Netlify
+          </a>
+        </footer>
+
+      </div>
+    </div>
+  );
 }
